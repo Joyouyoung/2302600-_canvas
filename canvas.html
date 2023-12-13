@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2302600 조유영 canvas</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+
+        #penBtn, #eraserBtn {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button id="penBtn" onclick="selectPen()">펜</button>
+    <button id="eraserBtn" onclick="selectEraser()">지우개</button>
+    <canvas id="myCanvas" width="800" height="500"></canvas>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
+            var painting = false;
+            var isPenSelected = true;
+
+            canvas.addEventListener("mousedown", startPosition);
+            canvas.addEventListener("mouseup", endPosition);
+            canvas.addEventListener("mousemove", draw);
+
+            function startPosition(e) {
+                painting = true;
+                draw(e);
+            }
+
+            function endPosition() {
+                painting = false;
+                ctx.beginPath();
+            }
+
+            function draw(e) {
+                if (!painting) return;
+
+                ctx.lineWidth = 5;
+                ctx.lineCap = "round";
+
+                if (isPenSelected) {
+                    ctx.strokeStyle = "#000";
+                } else {
+                    ctx.strokeStyle = "#fff"; // 지우개는 흰색으로 설정
+                }
+
+                ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            }
+
+            function selectPen() {
+                isPenSelected = true;
+                ctx.strokeStyle = "#000";
+            }
+
+            function selectEraser() {
+                isPenSelected = false;
+                ctx.strokeStyle = "#fff";
+            }
+        });
+    </script>
+</body>
+</html>
